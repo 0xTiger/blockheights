@@ -17,7 +17,7 @@ def dict_merge(dicts):
             neodict[k] = v
     return neodict
 
-cache_file = 'assets\\mc\\blockheights_backup.json'
+cache_file = 'dataset.json'
 
 print("Loading cache")
 with open(cache_file) as f:
@@ -51,10 +51,10 @@ def animate(i):
     ax2.legend()
 
     try:
-        imagebox = OffsetImage(mpimg.imread('assets\\mc\\textures\\' + type['id'] + '.png'), zoom=3)
+        imagebox = OffsetImage(mpimg.imread('textures\\' + type['id'] + '.png'), zoom=3)
         ax2.add_artist(AnnotationBbox(imagebox, (0.870,0.8), xycoords='axes fraction', frameon=False, annotation_clip=True))
     except:
-        imagebox = OffsetImage(mpimg.imread('assets\\mc\\textures\\missing.png'), zoom=3)
+        imagebox = OffsetImage(mpimg.imread('textures\\missing.png'), zoom=3)
         ax2.add_artist(AnnotationBbox(imagebox, (0.870,0.8), xycoords='axes fraction', frameon=False, annotation_clip=True))
 
     plt.xlabel('y level')
@@ -62,5 +62,5 @@ def animate(i):
     plt.title('Distribution of each type \nof block in a minecraft world')
 
 ani = animation.FuncAnimation(fig2, animate, frames=range(len(blocktypes)), interval=500, repeat_delay=2000)
-#ani.save('assets\\mc\\' + "mc_blockheights.mp4")
+ani.save("blockheights.mp4")
 plt.show()
