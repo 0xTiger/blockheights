@@ -23,8 +23,8 @@ def spiral_iter(t):
     elif y <= x and y <= -1*x: x += 1 #Walk RIGHT
     return (x, y)
 
-cache_file = 'assets\\mc\\blockheights.json'
-world_folder = 'C:\\Users\\tigeer\\AppData\\Roaming\\.minecraft\\saves\\manual'
+cache_file = 'dataset.json'
+world_folder = 'C:\\Users\\tigeer\\AppData\\Roaming\\.minecraft\\saves\\myworld'
 linearPath = True #Determines which regions are chosen for scanning and in which order
 
 try:
