@@ -14,7 +14,7 @@ def dict_merge(dicts):
             neodict[k] = v
     return neodict
 
-cache_file = 'assets\\mc\\blockheights_backup.json'
+cache_file = 'dataset.json'
 
 print("Loading cache")
 with open(cache_file) as f:
