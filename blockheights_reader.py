@@ -51,16 +51,19 @@ def animate(i):
     ax2.legend()
 
     try:
-        imagebox = OffsetImage(mpimg.imread('textures\\' + type['id'] + '.png'), zoom=3)
-        ax2.add_artist(AnnotationBbox(imagebox, (0.870,0.8), xycoords='axes fraction', frameon=False, annotation_clip=True))
+        imagebox = OffsetImage(mpimg.imread('textures\\' + type['id'] + '.png'), zoom=5)
+        ax2.add_artist(AnnotationBbox(imagebox, (0.985,0.9), xycoords='axes fraction', frameon=False, annotation_clip=True, box_alignment=(1,1)))
     except:
-        imagebox = OffsetImage(mpimg.imread('textures\\missing.png'), zoom=3)
-        ax2.add_artist(AnnotationBbox(imagebox, (0.870,0.8), xycoords='axes fraction', frameon=False, annotation_clip=True))
-
+        try:
+            imagebox = OffsetImage(mpimg.imread('textures\\missing.png'), zoom=5)
+            ax2.add_artist(AnnotationBbox(imagebox, (0.985,0.9), xycoords='axes fraction', frameon=False, annotation_clip=True, box_alignment=(1,1)))
+        except:
+            pass
+            
     plt.xlabel('y level')
     plt.ylabel('Abundance')
     plt.title('Distribution of each type \nof block in a minecraft world')
 
-ani = animation.FuncAnimation(fig2, animate, frames=range(len(blocktypes)), interval=500, repeat_delay=2000)
+ani = animation.FuncAnimation(fig2, animate, frames=range(len(blocktypes)), interval=2000, repeat_delay=2000)
 ani.save("blockheights.mp4")
 plt.show()
