@@ -1,5 +1,5 @@
 import json
-import anvil27
+import anvil
 from itertools import product
 from timeit import default_timer as timer
 
@@ -42,12 +42,12 @@ except:
 print("Starting in r: (%d, %d), c: (%d, %d)" % (latest_r[0], latest_r[1], latest_c[0], latest_c[1]))
 while True: #Steps through regions
     a , b = latest_r
-    region = anvil27.Region.from_file(world_folder + '\\region\\r.'+str(a)+'.'+str(b)+'.mca')
+    region = anvil.Region.from_file(world_folder + '\\region\\r.'+str(a)+'.'+str(b)+'.mca')
 
     for c in product(range(32),range(32)): #Steps through chunks
         start = timer()
-        if anvil27.Region.chunk_location(region, *c)[0] != 0 and ord(c) > ord(latest_c):
-            chunk = anvil27.Chunk.from_region(region, *c)
+        if anvil.Region.chunk_location(region, *c)[0] != 0 and ord(c) > ord(latest_c):
+            chunk = anvil.Chunk.from_region(region, *c)
         else:
             print("Failed: (%d, %d), skipping without saving" % (c[0], c[1]))
             continue
