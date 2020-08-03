@@ -6,7 +6,7 @@ The dataset provided has been scraped from about 1 billion blocks, over 15 regio
 The region files were generated using minecraft version 1.15.1
 
 ## scraper
-The majority of the work here is done by the [anvil library](https://pypi.org/project/anvil-parser/), written by matt44 so massive thanks to them. It can be found on PyPi or installed by pip using `pip install anvil-parser`
+The majority of the work here is done by the [anvil library](https://pypi.org/project/anvil-parser/), written by matt44 so massive thanks to them. It can be found on PyPi or installed by pip using `pip install -r requirements.txt`
 
 The blockheights_scraper is written for Python 2.7 however one of it's dependencies: anvil library is written for Python 3. This may cause issues.
 
