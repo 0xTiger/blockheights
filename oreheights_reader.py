@@ -3,12 +3,7 @@ import matplotlib.pyplot as plt
 from collections import Counter
 
 flatten = lambda l: [item for sublist in l for item in sublist]
-
-def dict_merge(dicts):
-    neodict = Counter()
-    for d in dicts:
-        neodict += Counter(d)
-    return neodict
+merge_dicts = lambda dicts: sum((Counter(d) for d in dicts), Counter())
 
 cache_file = 'dataset.json'
 
@@ -17,9 +12,9 @@ with open(cache_file) as f:
     cache = json.load(f)
     layers = {int(k):v for k,v in cache['layers'].items()}
 
-total_counts = dict_merge(layers.values())
+total_counts = merge_dicts(layers.values())
 allblocktypes = total_counts.keys()
-print(allblocktypes)
+# print(allblocktypes)
 
 ores = [{'id': 'coal_ore', 'color': '#141212'},
         {'id': 'iron_ore', 'color': '#f2b28a'},
@@ -33,17 +28,16 @@ pltdata = []
 for ore in ores:
     id = ore['id']
     ore['data'] = [v.get(id, 0) for v in layers.values()]
-    pltdata.append(flatten([[k]*v[id] for k,v in layers.items() if id in v]))
+    pltdata.append(flatten([[y]*count for y, count in enumerate(ore['data'])]))
 
 maxhs = [max(ore['data']) for ore in ores]
 totals = [sum(ore['data']) for ore in ores]
 print(totals)
-widthss = list(map(lambda x: float(x) / max(maxhs), maxhs))
+widthss = list(map(lambda x: x / max(maxhs), maxhs))
 
 print("Plotting Data")
 plt.style.use('ggplot')
-fig = plt.figure()
-ax = fig.add_subplot(1,1,1)
+fig, ax = plt.subplots()
 
 def set_axis_style(ax, labels):
     ax.get_xaxis().set_tick_params(direction='out')
@@ -53,25 +47,21 @@ def set_axis_style(ax, labels):
     ax.set_xlim(0.25, len(labels) + 0.75)
     ax.set_xlabel('Ore type')
 
-parts = ax.violinplot(
-        pltdata, widths=widthss, showmeans=False, showmedians=False,
-        showextrema=False)
+parts = ax.violinplot(pltdata, widths=widthss, showmeans=False, showmedians=False,
+                        showextrema=False)
 
-i = 0
-for pc in parts['bodies']:
+for i, pc in enumerate(parts['bodies']):
     pc.set_facecolor(ores[i]['color'])
     pc.set_alpha(1)
-    i += 1
 
 set_axis_style(ax, list(map(lambda x: x.split('_')[0], [ore['id'] for ore in ores])))
-plt.ylabel('y level')
-plt.title('How common are different ores\nin each layer of a minecraft world', fontname='Calibri', fontsize=20)
+ax.set_ylabel('y level')
+ax.set_title('How common are different ores\nin each layer of a minecraft world', fontname='Calibri', fontsize=20)
 
-fig2 = plt.figure()
-ax2 = fig2.add_subplot(1,1,1)
+fig2, ax2 = plt.subplots()
 
 for ore in ores:
-    plt.plot(range(256), ore['data'], label=ore['id'], color=ore['color'])
-plt.legend()
+    ax2.plot(range(256), ore['data'], label=ore['id'], color=ore['color'])
+ax2.legend()
 
 plt.show()

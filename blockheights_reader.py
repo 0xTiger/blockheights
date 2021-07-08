@@ -1,21 +1,12 @@
 import json
-import numpy as np
+from collections import Counter
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.image as mpimg
 from matplotlib.offsetbox import TextArea, DrawingArea, OffsetImage, AnnotationBbox
 
-flatten = lambda l: [item for sublist in l for item in sublist]
-dat = lambda x: [(v[x] if x in v else 0) for _,v in layers.items()]
-
-def dict_merge(dicts):
-    neodict = {}
-    for k, v in reduce(lambda x,y: x + y, [d.items() for d in dicts]):
-        if k in neodict.keys():
-            neodict[k] += v
-        else:
-            neodict[k] = v
-    return neodict
+dat = lambda x: [v.get(x, 0) for v in layers.values()]
+merge_dicts = lambda dicts: sum((Counter(d) for d in dicts), Counter())
 
 cache_file = 'dataset.json'
 
@@ -24,23 +15,21 @@ with open(cache_file) as f:
     cache = json.load(f)
     layers = {int(k):v for k,v in cache['layers'].items()}
 
-total_counts = dict_merge([v for k,v in layers.items()])
-blocktypes = [{'id': k, 'data': dat(k), 'total': v} for k,v in total_counts.items()]
+total_counts = merge_dicts([v for k,v in layers.items()])
+blocktypes = [{'id': id, 'data': dat(id), 'total': v} for id, v in total_counts.items()]
 blocktypes = sorted(blocktypes, key=lambda x: -1*x['total'])
 
 distribs = [blocktype['data'] for blocktype in blocktypes]
-names  = [blocktype['id'] for blocktype in blocktypes]
+names = [blocktype['id'] for blocktype in blocktypes]
 print(names)
 
 print("Plotting Data")
 plt.style.use('ggplot')
-fig = plt.figure()
-ax = fig.add_subplot(1,1,1)
 
+fig, ax = plt.subplots()
 plt.stackplot(range(256), distribs, labels=names)
 
-fig2 = plt.figure()
-ax2 = fig2.add_subplot(1,1,1)
+fig2, ax2 = plt.subplots()
 
 def animate(i):
     type = blocktypes[i]
@@ -51,18 +40,18 @@ def animate(i):
     ax2.legend()
 
     try:
-        imagebox = OffsetImage(mpimg.imread('textures\\' + type['id'] + '.png'), zoom=5)
+        imagebox = OffsetImage(mpimg.imread('textures/' + type['id'] + '.png'), zoom=5)
         ax2.add_artist(AnnotationBbox(imagebox, (0.985,0.9), xycoords='axes fraction', frameon=False, annotation_clip=True, box_alignment=(1,1)))
-    except:
+    except FileNotFoundError:
         try:
-            imagebox = OffsetImage(mpimg.imread('textures\\missing.png'), zoom=5)
+            imagebox = OffsetImage(mpimg.imread('textures/missing.png'), zoom=5)
             ax2.add_artist(AnnotationBbox(imagebox, (0.985,0.9), xycoords='axes fraction', frameon=False, annotation_clip=True, box_alignment=(1,1)))
         except:
             pass
-            
-    plt.xlabel('y level')
-    plt.ylabel('Abundance')
-    plt.title('Distribution of each type \nof block in a minecraft world')
+
+    ax2.set_xlabel('y level')
+    ax2.set_ylabel('Abundance')
+    ax2.set_title('Distribution of each type \nof block in a minecraft world')
 
 ani = animation.FuncAnimation(fig2, animate, frames=range(len(blocktypes)), interval=2000, repeat_delay=2000)
 ani.save("blockheights.mp4")
