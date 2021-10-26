@@ -1,6 +1,6 @@
 import os
 import json
-import anvil
+from anvil import Region, Chunk
 from itertools import product
 from collections import Counter
 from timeit import default_timer as timer
@@ -42,14 +42,14 @@ except FileNotFoundError:
 print(f'Starting in r: {latest_r}, c: {latest_c}')
 while True: # Steps through regions
     a , b = latest_r
-    region = anvil.Region.from_file(f'{world_folder}/region/r.{a}.{b}.mca')
+    region = Region.from_file(f'{world_folder}/region/r.{a}.{b}.mca')
 
     for c in product(range(32),range(32)): # Steps through chunks
         start = timer()
-        if anvil.Region.chunk_location(region, *c)[0] != 0 and ord(c) > ord(latest_c):
-            chunk = anvil.Chunk.from_region(region, *c)
+        if Region.chunk_location(region, *c)[0] != 0 and ord(c) > ord(latest_c):
+            chunk = Chunk.from_region(region, *c)
         else:
-            print("Failed: (%d, %d), skipping without saving" % (c[0], c[1]))
+            print(f"Failed: {c}, skipping without saving")
             continue
         
         for coords in product(range(16), range(256), range(16)): # Steps through induvidual blocks

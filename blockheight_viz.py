@@ -13,15 +13,15 @@ cache_file = 'dataset.json'
 print("Loading cache")
 with open(cache_file) as f:
     cache = json.load(f)
-    layers = {int(k):v for k,v in cache['layers'].items()}
+    layers = cache['layers']
 
-total_counts = merge_dicts([v for k,v in layers.items()])
+total_counts = merge_dicts(layers.values())
 blocktypes = [{'id': id, 'data': dat(id), 'total': v} for id, v in total_counts.items()]
 blocktypes = sorted(blocktypes, key=lambda x: -1*x['total'])
 
 distribs = [blocktype['data'] for blocktype in blocktypes]
 names = [blocktype['id'] for blocktype in blocktypes]
-print(names)
+print(total_counts)
 
 print("Plotting Data")
 plt.style.use('ggplot')
@@ -54,5 +54,5 @@ def animate(i):
     ax2.set_title('Distribution of each type \nof block in a minecraft world')
 
 ani = animation.FuncAnimation(fig2, animate, frames=range(len(blocktypes)), interval=2000, repeat_delay=2000)
-ani.save("blockheights.mp4")
+# ani.save("blockheights.mp4")
 plt.show()
