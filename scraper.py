@@ -37,16 +37,17 @@ try:
     print("Loading cache")
     with open(args.out) as f:
         cache = json.load(f)
-        layers = {int(k):Counter(v) for k,v in cache['layers'].items()}
-        latest_c, latest_r = cache['latest']['chunk'], cache['latest']['region']
+        layers = {int(k): Counter(v) for k, v in cache['layers'].items()}
+        latest_c, start_region = cache['latest']['chunk'], cache['latest']['region']
 except FileNotFoundError:
     print("FileNotFoundError: starting anew")
     layers = {y: Counter() for y in range(-64, 320)}
-    latest_c, latest_r = (0, 0), (0, 0)
+    latest_c, start_region = (0, 0), (0, 0)
 
 
 def iter_regions(start_region=None, spiral_path=False):
     x, z = (0, 0) if start_region is None else start_region
+    yield x, z
     while True:
         if spiral_path:
             x, z = spiral_step((x, z))
@@ -55,9 +56,9 @@ def iter_regions(start_region=None, spiral_path=False):
         yield x, z
 
 
-print(f'Starting in r: {latest_r}, c: {latest_c}')
-while True: # Steps through regions
-    a , b = latest_r
+print(f'Starting in r: {start_region}, c: {latest_c}')
+for a, b in iter_regions(start_region=start_region): # Steps through regions
+    print(f'In region: ({a}, {b})')
     region = Region.from_file(f'{world_folder}/region/r.{a}.{b}.mca')
 
     for c in product(range(32),range(32)): # Steps through chunks
@@ -74,19 +75,10 @@ while True: # Steps through regions
             layers[y][block.id] += 1
 
         latest_c = c
-        end = timer()
 
         with open(args.out, 'w') as o:
-            json.dump({'latest': {'region': latest_r, 'chunk': latest_c},
+            json.dump({'latest': {'region': start_region, 'chunk': latest_c},
                         'layers': layers}, o, indent=2)
-
-        print(f'Scraped: {c} in {end - start:.3f}s, saved cache @ {args.out}')
-
-    if args.spiral:
-        # Spiral path
-        latest_r = spiral_step(latest_r)
-    else:
-        # Linear Path
-        latest_r = (a, b + 1)
+        end = timer()
+        print(f'Scraped: {c} in {end - start:.3f}s')
     latest_c = (0, 0)
-    print(f'Moving to region: {latest_r}')

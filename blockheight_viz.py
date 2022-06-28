@@ -1,9 +1,10 @@
 import json
 from collections import Counter
-import matplotlib.pyplot as plt
+
 import matplotlib.animation as animation
 import matplotlib.image as mpimg
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+import matplotlib.pyplot as plt
+from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
 dat = lambda x: [v.get(x, 0) for v in layers.values()]
 merge_dicts = lambda dicts: sum((Counter(d) for d in dicts), Counter())
