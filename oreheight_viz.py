@@ -51,6 +51,7 @@ ax.set_xlim(0.25, len(ore_names) + 0.75)
 ax.set_xlabel('Ore type')
 ax.set_ylabel('y level')
 ax.set_title('How common are different ores\nin each layer of a minecraft world', fontname='Calibri', fontsize=20)
+fig.tight_layout()
 
 fig2, ax2 = plt.subplots()
 for ore in ores:
