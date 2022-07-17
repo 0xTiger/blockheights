@@ -6,7 +6,7 @@ The dataset provided has been scraped from about 1 billion blocks, over 15 regio
 The region files were generated using minecraft version 1.15.1
 
 ## scraper
-The majority of the work here is done by the [anvil library](https://pypi.org/project/anvil-parser/), written by matt44 so massive thanks to them. It can be found on PyPi or installed by pip using `pip install -r requirements.txt`
+The majority of the work here is done by [my fork of the anvil library](https://github.com/0xTiger/anvil-parser). It can be installed directly from github using pip: `git+https://github.com/0xTiger/anvil-parser.git`
 
 ## reader
 The first related [visualisation](https://www.reddit.com/efvgve) I posted on reddit was made using oreheights_reader.py, the latter (animation) was made using blockheights_reader.py. 
